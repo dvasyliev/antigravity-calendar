@@ -1,7 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import React, { useEffect } from 'react';
 import { useCalendar } from '../../context/CalendarContext';
 import type { CalendarEvent } from '../../utils/types';
+import { Modal } from '../common/Modal/Modal';
+import { Input } from '../common/Input/Input';
+import { TextArea } from '../common/TextArea/TextArea';
+import { Button } from '../common/Button/Button';
+import { useEventForm } from './useEventForm';
 import styles from './EventModal.module.css';
 
 interface EventModalProps {
@@ -11,292 +15,138 @@ interface EventModalProps {
   eventToEdit?: CalendarEvent; // If provided, modal is in edit mode
 }
 
-const MAX_TITLE_LENGTH = 60;
-const MAX_DESC_LENGTH = 500;
-
 export const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, defaultDate, eventToEdit }) => {
   const { addEvent, updateEvent } = useCalendar();
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [date, setDate] = useState(defaultDate || new Date().toISOString().split('T')[0]);
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
-  
-  const [errors, setErrors] = useState<{
-    title?: string;
-    description?: string;
-    date?: string;
-    time?: string;
-  }>({});
 
-  // Parse time range from existing event
-  const parseTimeRange = (timeString?: string): { start: string; end: string } => {
-    if (!timeString) return { start: '', end: '' };
-    
-    // Check if it's a time range (e.g., "09:00 - 10:30")
-    const rangeMatch = timeString.match(/^(\d{2}:\d{2})\s*-\s*(\d{2}:\d{2})$/);
-    if (rangeMatch) {
-      return { start: rangeMatch[1], end: rangeMatch[2] };
-    }
-    
-    // If it's just a single time, use it as start time
-    const timeMatch = timeString.match(/^(\d{2}:\d{2})$/);
-    if (timeMatch) {
-      return { start: timeMatch[1], end: '' };
-    }
-    
-    return { start: '', end: '' };
-  };
-
-  // Populate form when editing an event
-  useEffect(() => {
-    if (isOpen && eventToEdit) {
-      setTitle(eventToEdit.title);
-      setDescription(eventToEdit.description || '');
-      setDate(eventToEdit.date);
-      
-      const { start, end } = parseTimeRange(eventToEdit.time);
-      setStartTime(start);
-      setEndTime(end);
-      setErrors({});
-    }
-  }, [isOpen, eventToEdit]);
-
-  // Update date when defaultDate changes (for create mode)
-  useEffect(() => {
-    if (defaultDate && !eventToEdit) {
-      setDate(defaultDate);
-    }
-  }, [defaultDate, eventToEdit]);
-
-  // Reset form when modal closes
-  useEffect(() => {
-    if (!isOpen) {
-      setTitle('');
-      setDescription('');
-      setDate(defaultDate || new Date().toISOString().split('T')[0]);
-      setStartTime('');
-      setEndTime('');
-      setErrors({});
-    }
-  }, [isOpen, defaultDate]);
-
-  const validateForm = (): boolean => {
-    const newErrors: typeof errors = {};
-    let isValid = true;
-
-    if (!title.trim()) {
-      newErrors.title = 'Title is required';
-      isValid = false;
-    } else if (title.length > MAX_TITLE_LENGTH) {
-      newErrors.title = `Title must be ${MAX_TITLE_LENGTH} characters or less`;
-      isValid = false;
-    }
-
-    if (description.length > MAX_DESC_LENGTH) {
-      newErrors.description = `Description must be ${MAX_DESC_LENGTH} characters or less`;
-      isValid = false;
-    }
-
-    if (!date) {
-      newErrors.date = 'Date is required';
-      isValid = false;
-    }
-
-    if (startTime && endTime) {
-      if (endTime <= startTime) {
-        newErrors.time = 'End time must be after start time';
-        isValid = false;
-      }
-    }
-
-    setErrors(newErrors);
-    return isValid;
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
-    }
-
-    // Combine start and end time into a range string
-    let timeRange: string | undefined = undefined;
-    if (startTime && endTime) {
-      timeRange = `${startTime} - ${endTime}`;
-    } else if (startTime) {
-      timeRange = startTime;
-    }
-
-    if (eventToEdit) {
-      // Edit mode: update existing event
-      const updatedEvent: CalendarEvent = {
-        ...eventToEdit,
-        title: title.trim(),
-        date,
-        description: description.trim() || undefined,
-        time: timeRange,
-      };
-      updateEvent(updatedEvent);
+  const handleFormSubmit = (eventData: Omit<CalendarEvent, 'id'>, isEdit: boolean) => {
+    if (isEdit && eventToEdit) {
+      updateEvent({ ...eventToEdit, ...eventData });
     } else {
-      // Create mode: add new event
       const newEvent: CalendarEvent = {
         id: `event-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-        title: title.trim(),
-        date,
-        description: description.trim() || undefined,
-        time: timeRange,
+        ...eventData
       };
       addEvent(newEvent);
     }
-    
     onClose();
   };
 
-  const handleBackdropClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  };
+  const {
+    title, setTitle,
+    description, setDescription,
+    date, setDate,
+    startTime, setStartTime,
+    endTime, setEndTime,
+    errors, setErrors,
+    handleSubmit,
+    resetForm,
+    MAX_TITLE_LENGTH,
+    MAX_DESC_LENGTH
+  } = useEventForm({ defaultDate, eventToEdit, onSubmit: handleFormSubmit });
 
-  if (!isOpen) return null;
+  // Reset form when modal opens/closes
+  useEffect(() => {
+    if (!isOpen) {
+      resetForm();
+    }
+  }, [isOpen, defaultDate, resetForm]);
+
+  const footer = (
+    <div className={styles.actions}>
+      <Button 
+        type="button" 
+        variant="secondary"
+        onClick={onClose}
+      >
+        Cancel
+      </Button>
+      <Button 
+        type="button"
+        variant="primary"
+        onClick={() => handleSubmit()}
+      >
+        Save Event
+      </Button>
+    </div>
+  );
 
   return (
-    <div className={styles.backdrop} onClick={handleBackdropClick}>
-      <div className={styles.modal}>
-        <div className={styles.header}>
-          <h2 className={styles.title}>{eventToEdit ? 'Edit Event' : 'Create Event'}</h2>
-          <button 
-            className={styles.closeButton} 
-            onClick={onClose}
-            type="button"
-            aria-label="Close"
-          >
-            <X size={20} />
-          </button>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={eventToEdit ? 'Edit Event' : 'Create Event'}
+      footer={footer}
+    >
+      <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
+        <Input
+          label="Title"
+          value={title}
+          onChange={(e) => {
+            setTitle(e.target.value);
+            if (errors.title) setErrors(prev => ({ ...prev, title: undefined }));
+          }}
+          placeholder="Event title"
+          autoFocus
+          required
+          maxLength={MAX_TITLE_LENGTH}
+          error={errors.title}
+        />
+
+        <TextArea
+          label="Description (optional)"
+          value={description}
+          onChange={(e) => {
+            setDescription(e.target.value);
+            if (errors.description) setErrors(prev => ({ ...prev, description: undefined }));
+          }}
+          placeholder="Add description..."
+          maxLength={MAX_DESC_LENGTH}
+          error={errors.description}
+        />
+
+        <div className={styles.formRow}>
+          <Input
+            label="Date"
+            type="date"
+            value={date}
+            onChange={(e) => {
+              setDate(e.target.value);
+              if (errors.date) setErrors(prev => ({ ...prev, date: undefined }));
+            }}
+            required
+            error={errors.date}
+          />
         </div>
 
-        <form onSubmit={handleSubmit} className={styles.form}>
-          <div className={styles.formGroup}>
-            <label htmlFor="event-title" className={styles.label}>
-              Title <span className={styles.required}>*</span>
-            </label>
-            <div style={{ position: 'relative' }}>
-              <input
-                id="event-title"
-                type="text"
-                value={title}
-                onChange={(e) => {
-                    setTitle(e.target.value);
-                    if (errors.title) setErrors(prev => ({...prev, title: undefined}));
-                }}
-                className={`${styles.input} ${errors.title ? styles.inputError : ''}`}
-                placeholder="Event title"
-                autoFocus
-              />
-              <span className={`${styles.charCount} ${title.length > MAX_TITLE_LENGTH ? styles.charCountError : ''}`}>
-                {title.length}/{MAX_TITLE_LENGTH}
-              </span>
-            </div>
-            {errors.title && <span className={styles.errorText}>{errors.title}</span>}
-          </div>
+        <div className={styles.formRow}>
+          <Input
+            label="Start Time (optional)"
+            type="time"
+            value={startTime}
+            onChange={(e) => {
+              setStartTime(e.target.value);
+              if (errors.time) setErrors(prev => ({ ...prev, time: undefined }));
+            }}
+            error={errors.time ? ' ' : undefined} // Just trigger error state style, message is below
+          />
 
-          <div className={styles.formGroup}>
-            <label htmlFor="event-description" className={styles.label}>
-              Description <span className={styles.optional}>(optional)</span>
-            </label>
-            <div style={{ position: 'relative' }}>
-              <textarea
-                id="event-description"
-                value={description}
-                onChange={(e) => {
-                    setDescription(e.target.value);
-                    if (errors.description) setErrors(prev => ({...prev, description: undefined}));
-                }}
-                className={`${styles.textarea} ${errors.description ? styles.textareaError : ''}`}
-                placeholder="Add description..."
-                rows={3}
-              />
-               <span className={`${styles.charCount} ${description.length > MAX_DESC_LENGTH ? styles.charCountError : ''}`}>
-                {description.length}/{MAX_DESC_LENGTH}
-              </span>
-            </div>
-            {errors.description && <span className={styles.errorText}>{errors.description}</span>}
+          <Input
+            label="End Time (optional)"
+            type="time"
+            value={endTime}
+            onChange={(e) => {
+              setEndTime(e.target.value);
+              if (errors.time) setErrors(prev => ({ ...prev, time: undefined }));
+            }}
+            error={errors.time ? ' ' : undefined}
+          />
+        </div>
+        {errors.time && (
+          <div className={styles.errorContainer}>
+            <span className={styles.errorText}>{errors.time}</span>
           </div>
-
-          <div className={styles.formRow}>
-            <div className={styles.formGroup}>
-              <label htmlFor="event-date" className={styles.label}>
-                Date <span className={styles.required}>*</span>
-              </label>
-              <input
-                id="event-date"
-                type="date"
-                value={date}
-                onChange={(e) => {
-                    setDate(e.target.value);
-                    if (errors.date) setErrors(prev => ({...prev, date: undefined}));
-                }}
-                className={`${styles.input} ${errors.date ? styles.inputError : ''}`}
-                required
-              />
-              {errors.date && <span className={styles.errorText}>{errors.date}</span>}
-            </div>
-          </div>
-
-          <div className={styles.formRow}>
-            <div className={styles.formGroup}>
-              <label htmlFor="event-start-time" className={styles.label}>
-                Start Time <span className={styles.optional}>(optional)</span>
-              </label>
-              <input
-                id="event-start-time"
-                type="time"
-                value={startTime}
-                onChange={(e) => {
-                    setStartTime(e.target.value);
-                    if (errors.time) setErrors(prev => ({...prev, time: undefined}));
-                }}
-                className={`${styles.input} ${errors.time ? styles.inputError : ''}`}
-              />
-            </div>
-
-            <div className={styles.formGroup}>
-              <label htmlFor="event-end-time" className={styles.label}>
-                End Time <span className={styles.optional}>(optional)</span>
-              </label>
-              <input
-                id="event-end-time"
-                type="time"
-                value={endTime}
-                onChange={(e) => {
-                    setEndTime(e.target.value);
-                    if (errors.time) setErrors(prev => ({...prev, time: undefined}));
-                }}
-                className={`${styles.input} ${errors.time ? styles.inputError : ''}`}
-              />
-            </div>
-          </div>
-          {errors.time && <div style={{ marginTop: '-15px', marginBottom: '15px' }}><span className={styles.errorText}>{errors.time}</span></div>}
-
-          <div className={styles.actions}>
-            <button 
-              type="button" 
-              onClick={onClose}
-              className={styles.cancelButton}
-            >
-              Cancel
-            </button>
-            <button 
-              type="submit"
-              className={styles.saveButton}
-            >
-              Save Event
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        )}
+      </form>
+    </Modal>
   );
 };

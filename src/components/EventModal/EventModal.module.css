@@ -1,250 +1,34 @@
-.backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  animation: fadeIn 0.2s ease-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.modal {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  width: 90%;
-  max-width: 500px;
-  max-height: 90vh;
-  overflow: hidden;
-  animation: slideUp 0.3s ease-out;
-}
-
-@keyframes slideUp {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 24px 24px 16px;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.title {
-  font-size: 20px;
-  font-weight: 600;
-  color: #111827;
-  margin: 0;
-}
-
-.closeButton {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #6b7280;
-  transition: all 0.2s;
-}
-
-.closeButton:hover {
-  background: #f3f4f6;
-  color: #111827;
-}
-
-.form {
-  padding: 24px;
-  overflow-y: auto;
-  max-height: calc(90vh - 80px);
-}
-
-.formGroup {
-  margin-bottom: 20px;
-  position: relative;
-}
-
 .formRow {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
 }
 
-.label {
-  display: block;
-  font-size: 14px;
-  font-weight: 500;
-  color: #374151;
-  margin-bottom: 8px;
-}
-
-.required {
-  color: #ef4444;
-}
-
-.optional {
-  color: #9ca3af;
-  font-weight: 400;
-  font-size: 13px;
-}
-
-.input,
-.textarea {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 14px;
-  font-family: inherit;
-  color: #111827;
-  transition: all 0.2s;
-  box-sizing: border-box;
-}
-
-.input:focus,
-.textarea:focus {
-  outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-}
-
-.inputError,
-.textareaError {
-  border-color: #ef4444 !important;
-}
-
-.inputError:focus,
-.textareaError:focus {
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
-}
-
-.errorText {
-  display: block;
-  color: #ef4444;
-  font-size: 12px;
-  margin-top: 6px;
-  animation: fadeIn 0.2s ease-out;
-}
-
-.charCount {
-  position: absolute;
-  top: 0;
-  right: 0;
-  font-size: 12px;
-  color: #9ca3af;
-}
-
-.charCountWarning {
-  color: #f59e0b;
-}
-
-.charCountError {
-  color: #ef4444;
-}
-
-.textarea {
-  resize: vertical;
-  min-height: 80px;
-}
-
 .actions {
   display: flex;
   gap: 12px;
   justify-content: flex-end;
-  margin-top: 24px;
-  padding-top: 20px;
-  border-top: 1px solid #e5e7eb;
 }
 
-.cancelButton,
-.saveButton {
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-  border: none;
+.errorContainer {
+  margin-top: -15px; 
+  margin-bottom: 20px;
 }
 
-.cancelButton {
-  background: #f3f4f6;
-  color: #374151;
+.errorText {
+  color: #ef4444;
+  font-size: 12px;
+  animation: fadeIn 0.2s ease-out;
 }
 
-.cancelButton:hover {
-  background: #e5e7eb;
-}
-
-.saveButton {
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-  color: white;
-}
-
-.saveButton:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
-}
-
-.saveButton:active {
-  transform: translateY(0);
-}
-
-.saveButton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.saveButton:disabled:hover {
-  transform: none;
-  box-shadow: none;
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
 }
 
 /* Mobile responsive */
 @media (max-width: 640px) {
-  .modal {
-    width: 95%;
-    max-height: 95vh;
-  }
-
   .formRow {
     grid-template-columns: 1fr;
-  }
-
-  .header {
-    padding: 20px 20px 12px;
-  }
-
-  .form {
-    padding: 20px;
-  }
-
-  .title {
-    font-size: 18px;
   }
 }

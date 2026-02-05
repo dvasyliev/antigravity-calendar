@@ -1,0 +1,122 @@
+.wrapper {
+  margin-bottom: 20px;
+}
+
+.label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.required {
+  color: #ef4444;
+}
+
+.inputContainer {
+  position: relative;
+}
+
+.input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  color: #111827;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.inputError {
+  border-color: #ef4444 !important;
+}
+
+.inputError:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+}
+
+.errorText {
+  display: block;
+  color: #ef4444;
+  font-size: 12px;
+  margin-top: 6px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.charCount {
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translateY(-100%);
+  margin-top: -8px; 
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* Adjust char count position if we want it inside, but design had it outside/top-right relative to input before 
+   actually in previous design it was absolute top right of the container. 
+   Let's keep it consistent: absolute to the input container.
+*/
+.charCount {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: white; /* to cover text if needed, or transparent */
+  pointer-events: none;
+}
+
+/* Wait, standard design usually places it below or inside. 
+   Previous design: 
+   .charCount { position: absolute; top: 0; right: 0; }
+   Checking previous EventModal.tsx...
+   <div style={{ position: 'relative' }}> 
+      <input ... />
+      <span className={charCount}>...</span>
+   </div>
+   
+   The previous CSS had:
+   .charCount { position: absolute; top: 0; right: 0; }
+   Wait, if it's absolute top 0 right 0 of the container, it overlaps the input text?
+   Let's look at the screenshot or recent recording.
+   
+   Actually, let's make it simple and robust. 
+   Let's put it on the bottom right of the input, inside the input padding?
+   Or top right of the LABEL line?
+   
+   Let's follow the previous CSS logic but ensure it doesn't overlap text awkwardly. 
+   The previous logic was `top: 0; right: 0;` inside a relative div that contained the input. 
+   This puts it inside the input area at the top right.
+*/
+
+.charCount {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 11px;
+  background: rgba(255,255,255,0.8);
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.charCountWarning {
+  color: #f59e0b;
+}
+
+.charCountError {
+  color: #ef4444;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
