@@ -10,6 +10,8 @@ interface CalendarContextType {
   setCurrentDate: (date: Dayjs) => void;
   setSelectedDate: (date: Dayjs) => void;
   addEvent: (event: CalendarEvent) => void;
+  updateEvent: (event: CalendarEvent) => void;
+  deleteEvent: (eventId: string) => void;
 }
 
 const CalendarContext = createContext<CalendarContextType | undefined>(undefined);
@@ -24,8 +26,18 @@ export const CalendarProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setEvents(prev => [...prev, event]);
   };
 
+  const updateEvent = (updatedEvent: CalendarEvent) => {
+    setEvents(prev => prev.map(event => 
+      event.id === updatedEvent.id ? updatedEvent : event
+    ));
+  };
+
+  const deleteEvent = (eventId: string) => {
+    setEvents(prev => prev.filter(event => event.id !== eventId));
+  };
+
   return (
-    <CalendarContext.Provider value={{ currentDate, selectedDate, events, setCurrentDate, setSelectedDate, addEvent }}>
+    <CalendarContext.Provider value={{ currentDate, selectedDate, events, setCurrentDate, setSelectedDate, addEvent, updateEvent, deleteEvent }}>
       {children}
     </CalendarContext.Provider>
   );
