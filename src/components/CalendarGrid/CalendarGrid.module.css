@@ -1,0 +1,89 @@
+.gridContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 40px;
+  overflow: hidden;
+}
+
+.headers {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 20px;
+}
+
+.headerCell {
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  padding-left: 10px;
+  letter-spacing: 1px;
+}
+
+.grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  border-left: 1px solid var(--border-color);
+  border-top: 1px solid var(--border-color);
+}
+
+.dayCell {
+  border-right: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  cursor: pointer;
+  transition: background-color 0.1s;
+  position: relative;
+}
+
+.dayCell:hover {
+  background-color: var(--day-hover);
+}
+
+.outsideMonth {
+  opacity: 0.3;
+  background-color: #FAFAFA;
+}
+
+.selected {
+  background-color: var(--day-selected-bg);
+}
+
+/* .selected::after {
+   content: "";
+   ...
+} */
+
+.dayNumber {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 10px;
+  color: var(--text-main);
+}
+
+.eventDots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--current-day-dot); /* Default color */
+}
+
+/* We could alternate colors based on index or props, but keeping simple for now */
+.dot:nth-child(2n) {
+  background-color: #56CCF2;
+}
+.dot:nth-child(3n) {
+  background-color: #F2994A;
+}

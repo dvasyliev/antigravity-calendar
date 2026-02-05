@@ -1,0 +1,46 @@
+:root {
+  --primary: #7B68EE; /* MediumSlateBlue approx */
+  --primary-dark: #6A5ACD;
+  --bg-sidebar: #7B68EE; 
+  --bg-main: #FFFFFF;
+  --bg-app: #F5F6F8;
+  
+  --text-sidebar: #FFFFFF;
+  --text-sidebar-muted: rgba(255, 255, 255, 0.6);
+  --text-main: #1A1A1A;
+  --text-muted: #8E9298;
+  
+  --border-color: #E6E8EC;
+  
+  /* Calendar specific */
+  --day-hover: #F0F2F5;
+  --day-selected-bg: #Eef0f6; /* Light purple tint? */
+  --current-day-dot: #FF6B6B;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden; /* App-like feel */
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}

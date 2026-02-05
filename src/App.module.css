@@ -1,0 +1,48 @@
+.container {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  background-color: var(--bg-app);
+}
+
+.sidebarPlaceholder {
+  width: 280px;
+  background-color: var(--bg-sidebar);
+  color: var(--text-sidebar);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mainContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--bg-main);
+  border-top-left-radius: 30px;
+  border-bottom-left-radius: 30px;
+  /* Shadow to separate from sidebar if needed, or the radius does the job */
+  box-shadow: -10px 0 30px rgba(0,0,0,0.05);
+  margin-left: -20px; /* Overlap effect? Or just Sidebar stays flat and main curves over it. */
+  /* Replicating Screenshot 1: It looks like the sidebar is flat, and the main content card floats or sits next to it. 
+     Actually screenshot 1 sidebar is white. Screenshot 2 sidebar is purple. 
+     Plan says: Sidebar styles from Screenshot 2 (Purple). Main styles from Screenshot 1 (White card).
+     Let's keep it simple: Sidebar on left, Main content on right. Main content might have border radius.
+  */
+  margin: 0; /* Reset */
+}
+
+.calendarArea {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.dayPanelPlaceholder {
+  width: 350px; /* Wider for details */
+  border-left: 1px solid var(--border-color);
+  background: white;
+  flex-shrink: 0;
+}

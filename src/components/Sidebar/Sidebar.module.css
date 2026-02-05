@@ -1,0 +1,73 @@
+.sidebar {
+  width: 100%;
+  height: 100%;
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-sidebar);
+  color: var(--text-sidebar);
+}
+
+.yearControl {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  padding: 0 10px;
+}
+
+.yearDisplay {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.navBtn {
+  color: var(--text-sidebar);
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  padding: 5px;
+}
+
+.navBtn:hover {
+  opacity: 1;
+}
+
+.monthList {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  overflow-y: auto;
+}
+
+.monthItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 15px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-sidebar-muted);
+}
+
+.monthItem:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-sidebar);
+}
+
+.monthItem.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: var(--text-sidebar);
+  font-weight: 600;
+}
+
+.eventCount {
+  font-size: 12px;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 2px 8px;
+  border-radius: 10px;
+  min-width: 20px;
+  text-align: center;
+}

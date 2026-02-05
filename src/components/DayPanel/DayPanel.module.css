@@ -1,0 +1,107 @@
+.panel {
+  width: 100%;
+  height: 100%;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background-color: #FFFFFF; /* White background as per screenshot 1 right panel */
+}
+
+.header {
+  margin-bottom: 40px;
+}
+
+.dateTitle {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--primary); /* Matching the green/teal in screenshot 1, but here purple per user req? 
+                           Screenshot 1 text is Green to match its theme. 
+                           Screenshot 2 is Purple.
+                           I'll use var(--primary) which is purple. */
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+
+.dayName {
+  font-size: 16px;
+  color: var(--text-muted); /* Red-ish in screenshot 1? */
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.eventList {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+}
+
+.emptyState {
+  color: var(--text-muted);
+  font-style: italic;
+  margin-top: 20px;
+}
+
+.eventCard {
+  background-color: #fff;
+  /* border-bottom: 1px solid var(--border-color); */
+  padding-bottom: 15px;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.eventInfo {
+  flex: 1;
+}
+
+.eventTitle {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: var(--text-main);
+}
+
+.eventTime {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.eventDesc {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.eventActions {
+  color: var(--text-muted);
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+.eventActions:hover {
+  opacity: 1;
+}
+
+.addButton {
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: var(--primary); /* Green in screenshot 1, using Purple here */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.addButton:hover {
+  transform: scale(1.05);
+  background-color: var(--primary-dark);
+}
