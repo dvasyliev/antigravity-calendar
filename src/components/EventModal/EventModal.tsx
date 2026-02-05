@@ -11,6 +11,9 @@ interface EventModalProps {
   eventToEdit?: CalendarEvent; // If provided, modal is in edit mode
 }
 
+const MAX_TITLE_LENGTH = 60;
+const MAX_DESC_LENGTH = 500;
+
 export const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, defaultDate, eventToEdit }) => {
   const { addEvent, updateEvent } = useCalendar();
   const [title, setTitle] = useState('');
@@ -18,6 +21,13 @@ export const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, default
   const [date, setDate] = useState(defaultDate || new Date().toISOString().split('T')[0]);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
+  
+  const [errors, setErrors] = useState<{
+    title?: string;
+    description?: string;
+    date?: string;
+    time?: string;
+  }>({});
 
   // Parse time range from existing event
   const parseTimeRange = (timeString?: string): { start: string; end: string } => {
@@ -48,6 +58,7 @@ export const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, default
       const { start, end } = parseTimeRange(eventToEdit.time);
       setStartTime(start);
       setEndTime(end);
+      setErrors({});
     }
   }, [isOpen, eventToEdit]);
 
@@ -66,13 +77,47 @@ export const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, default
       setDate(defaultDate || new Date().toISOString().split('T')[0]);
       setStartTime('');
       setEndTime('');
+      setErrors({});
     }
   }, [isOpen, defaultDate]);
+
+  const validateForm = (): boolean => {
+    const newErrors: typeof errors = {};
+    let isValid = true;
+
+    if (!title.trim()) {
+      newErrors.title = 'Title is required';
+      isValid = false;
+    } else if (title.length > MAX_TITLE_LENGTH) {
+      newErrors.title = `Title must be ${MAX_TITLE_LENGTH} characters or less`;
+      isValid = false;
+    }
+
+    if (description.length > MAX_DESC_LENGTH) {
+      newErrors.description = `Description must be ${MAX_DESC_LENGTH} characters or less`;
+      isValid = false;
+    }
+
+    if (!date) {
+      newErrors.date = 'Date is required';
+      isValid = false;
+    }
+
+    if (startTime && endTime) {
+      if (endTime <= startTime) {
+        newErrors.time = 'End time must be after start time';
+        isValid = false;
+      }
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!title.trim()) {
+    if (!validateForm()) {
       return;
     }
 
@@ -137,30 +182,47 @@ export const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, default
             <label htmlFor="event-title" className={styles.label}>
               Title <span className={styles.required}>*</span>
             </label>
-            <input
-              id="event-title"
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className={styles.input}
-              placeholder="Event title"
-              required
-              autoFocus
-            />
+            <div style={{ position: 'relative' }}>
+              <input
+                id="event-title"
+                type="text"
+                value={title}
+                onChange={(e) => {
+                    setTitle(e.target.value);
+                    if (errors.title) setErrors(prev => ({...prev, title: undefined}));
+                }}
+                className={`${styles.input} ${errors.title ? styles.inputError : ''}`}
+                placeholder="Event title"
+                autoFocus
+              />
+              <span className={`${styles.charCount} ${title.length > MAX_TITLE_LENGTH ? styles.charCountError : ''}`}>
+                {title.length}/{MAX_TITLE_LENGTH}
+              </span>
+            </div>
+            {errors.title && <span className={styles.errorText}>{errors.title}</span>}
           </div>
 
           <div className={styles.formGroup}>
             <label htmlFor="event-description" className={styles.label}>
               Description <span className={styles.optional}>(optional)</span>
             </label>
-            <textarea
-              id="event-description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className={styles.textarea}
-              placeholder="Add description..."
-              rows={3}
-            />
+            <div style={{ position: 'relative' }}>
+              <textarea
+                id="event-description"
+                value={description}
+                onChange={(e) => {
+                    setDescription(e.target.value);
+                    if (errors.description) setErrors(prev => ({...prev, description: undefined}));
+                }}
+                className={`${styles.textarea} ${errors.description ? styles.textareaError : ''}`}
+                placeholder="Add description..."
+                rows={3}
+              />
+               <span className={`${styles.charCount} ${description.length > MAX_DESC_LENGTH ? styles.charCountError : ''}`}>
+                {description.length}/{MAX_DESC_LENGTH}
+              </span>
+            </div>
+            {errors.description && <span className={styles.errorText}>{errors.description}</span>}
           </div>
 
           <div className={styles.formRow}>
@@ -172,10 +234,14 @@ export const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, default
                 id="event-date"
                 type="date"
                 value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className={styles.input}
+                onChange={(e) => {
+                    setDate(e.target.value);
+                    if (errors.date) setErrors(prev => ({...prev, date: undefined}));
+                }}
+                className={`${styles.input} ${errors.date ? styles.inputError : ''}`}
                 required
               />
+              {errors.date && <span className={styles.errorText}>{errors.date}</span>}
             </div>
           </div>
 
@@ -188,8 +254,11 @@ export const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, default
                 id="event-start-time"
                 type="time"
                 value={startTime}
-                onChange={(e) => setStartTime(e.target.value)}
-                className={styles.input}
+                onChange={(e) => {
+                    setStartTime(e.target.value);
+                    if (errors.time) setErrors(prev => ({...prev, time: undefined}));
+                }}
+                className={`${styles.input} ${errors.time ? styles.inputError : ''}`}
               />
             </div>
 
@@ -201,11 +270,15 @@ export const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, default
                 id="event-end-time"
                 type="time"
                 value={endTime}
-                onChange={(e) => setEndTime(e.target.value)}
-                className={styles.input}
+                onChange={(e) => {
+                    setEndTime(e.target.value);
+                    if (errors.time) setErrors(prev => ({...prev, time: undefined}));
+                }}
+                className={`${styles.input} ${errors.time ? styles.inputError : ''}`}
               />
             </div>
           </div>
+          {errors.time && <div style={{ marginTop: '-15px', marginBottom: '15px' }}><span className={styles.errorText}>{errors.time}</span></div>}
 
           <div className={styles.actions}>
             <button 
@@ -218,7 +291,6 @@ export const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, default
             <button 
               type="submit"
               className={styles.saveButton}
-              disabled={!title.trim()}
             >
               Save Event
             </button>

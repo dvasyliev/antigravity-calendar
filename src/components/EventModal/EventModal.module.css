@@ -85,6 +85,7 @@
 
 .formGroup {
   margin-bottom: 20px;
+  position: relative;
 }
 
 .formRow {
@@ -129,6 +130,40 @@
   outline: none;
   border-color: #6366f1;
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.inputError,
+.textareaError {
+  border-color: #ef4444 !important;
+}
+
+.inputError:focus,
+.textareaError:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+}
+
+.errorText {
+  display: block;
+  color: #ef4444;
+  font-size: 12px;
+  margin-top: 6px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.charCount {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.charCountWarning {
+  color: #f59e0b;
+}
+
+.charCountError {
+  color: #ef4444;
 }
 
 .textarea {
