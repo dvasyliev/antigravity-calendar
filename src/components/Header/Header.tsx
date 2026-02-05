@@ -7,7 +7,7 @@ export const Header: React.FC = () => {
       <div className={styles.logo}>
         {/* Simple logo icon or text */}
         <div className={styles.logoIcon}>C</div>
-        <span>CLDR</span>
+        <span>Calendar</span>
       </div>
       
       <div className={styles.userControls}>

@@ -80,10 +80,53 @@
   color: var(--text-muted);
   cursor: pointer;
   opacity: 0.5;
+  position: relative;
 }
 
 .eventActions:hover {
   opacity: 1;
+}
+
+.dropdownMenu {
+  position: absolute;
+  right: 0;
+  top: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  z-index: 100;
+  min-width: 120px;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.dropdownItem {
+  padding: 10px 16px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  transition: background-color 0.2s;
+}
+
+.dropdownItem:hover {
+  background-color: #f8f8f8;
+}
+
+.dropdownItem.deleteAction {
+  color: #ff4d4f;
+}
+
+.dropdownItem.deleteAction:hover {
+  background-color: #fff1f0;
 }
 
 .addButton {
