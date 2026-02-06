@@ -14,7 +14,7 @@ interface CalendarContextType {
   deleteEvent: (eventId: string) => void;
 }
 
-const CalendarContext = createContext<CalendarContextType | undefined>(undefined);
+export const CalendarContext = createContext<CalendarContextType | undefined>(undefined);
 
 export const CalendarProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentDate, setCurrentDate] = useState<Dayjs>(dayjs());

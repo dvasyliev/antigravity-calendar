@@ -45,6 +45,7 @@ const EventItem: React.FC<{ event: CalendarEvent; onEdit: () => void; onDelete: 
           size={16} 
           className={styles.moreIcon} 
           onClick={() => setIsMenuOpen(!isMenuOpen)}
+          data-testid={`event-menu-${event.id}`}
         />
         
         {isMenuOpen && (
@@ -53,7 +54,7 @@ const EventItem: React.FC<{ event: CalendarEvent; onEdit: () => void; onDelete: 
               <Edit2 size={14} />
               Edit
             </button>
-            <button className={`${styles.dropdownItem} ${styles.deleteAction}`} onClick={handleDelete}>
+            <button className={`${styles.dropdownItem} ${styles.deleteAction}`} onClick={handleDelete} data-testid="delete-event-btn">
               <Trash2 size={14} />
               Delete
             </button>
@@ -134,6 +135,7 @@ export const DayPanel: React.FC = () => {
         className={styles.addButton} 
         title="Add New Event"
         onClick={handleOpenCreateModal}
+        data-testid="add-event-btn"
       >
         <Plus size={24} color="#fff" />
       </button>
