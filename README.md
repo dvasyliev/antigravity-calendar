@@ -5,7 +5,7 @@ About me ◽️ 🎬 Udemy Instructor ◽️ 👨🏻‍💻 Front-End Engineer 
 This repository contains the Source Code for the "Calendar App" from 🧑🏻‍💻 [Google Antigravity for Beginners: AI Coding Crash Course ](https://linkly.link/2ZqIu) course.
 
 <!-- COURSES:START -->
-# My Educational Courses
+## My Educational Courses
 
 I teach developers what I use in production: practical, project-based courses on AI coding tools, Agentic AI, Vibe Coding and modern full-stack technologies. Every course builds on projects I ship and workflows I test first. Students learn what holds up in real work, from new framework releases to AI coding tools.
 
